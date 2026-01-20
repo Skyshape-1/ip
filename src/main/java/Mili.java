@@ -1,22 +1,29 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Mili {
+    private static final String HOR_DIV_LINE = "------------------------------------------------";
     public static void main(String[] args) {
-        String HOR_DIV_LINE = "------------------------------------------------";
+
+        ArrayList<Task> storedTasks = new ArrayList<Task>(100);
 
         printLogo();
-        greet(HOR_DIV_LINE);
+        greet();
 
         Scanner sc = new Scanner(System.in);
 
         String nextMessage = sc.nextLine();
+        Task newTask;
         while(true) {
             if (nextMessage.equals("bye")) {
-                exit(HOR_DIV_LINE);
+                exit();
                 break;
             }
-            echo(nextMessage, HOR_DIV_LINE);
+            newTask = new Task(nextMessage);
+            echo(nextMessage, storedTasks);
+            storedTasks.add(newTask);
             nextMessage = sc.nextLine();
+
         }
     }
 
@@ -29,26 +36,41 @@ public class Mili {
         System.out.println("Hello from\n" + logo);
     }
 
-    private static void greet(String hor_div_line) {
+    private static void greet() {
         String greeting = "Hello! I'm Mili \nWhat can I do for you?\n";
-        System.out.println(hor_div_line);
+        System.out.println(HOR_DIV_LINE);
         System.out.println(greeting);
-        System.out.println(hor_div_line);
+        System.out.println(HOR_DIV_LINE);
         System.out.println("\n");
     }
 
-    private static void echo(String userMessage, String hor_div_line) {
-        System.out.println(hor_div_line);
-        System.out.println(userMessage);
-        System.out.println(hor_div_line);
+    private static void echo(String userMessage, ArrayList<Task> tasksList) {
+
+        if (userMessage.equals("list")) {
+            list(tasksList);
+            return;
+        }
+
+        System.out.println(HOR_DIV_LINE);
+        System.out.println("added: " + userMessage);
+        System.out.println(HOR_DIV_LINE);
         System.out.println("\n");
     }
 
-    private static void exit(String hor_div_line) {
+    private static void exit() {
         String byebye = "Bye. Hope to see you again soon!";
-        System.out.println(hor_div_line);
+        System.out.println(HOR_DIV_LINE);
         System.out.println(byebye);
-        System.out.println(hor_div_line);
+        System.out.println(HOR_DIV_LINE);
         System.out.println("\n");
+    }
+
+    private static void list(ArrayList<Task> tasksList) {
+        System.out.println(HOR_DIV_LINE);
+        int numberOfTasks = tasksList.size();
+        for (int i = 1; i <= numberOfTasks; i+=1) {
+            System.out.println(i + ". " + tasksList.get(i));
+        }
+        System.out.println(HOR_DIV_LINE);
     }
 }
