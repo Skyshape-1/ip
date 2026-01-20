@@ -1,6 +1,6 @@
 public class Task {
-    private final String taskName;
-    private final boolean isCompleted;
+    protected final String taskName;
+    protected final boolean isCompleted;
 
     Task(String taskName, boolean isCompleted) {
         this.taskName = taskName;
@@ -25,12 +25,9 @@ public class Task {
         return this;
     }
 
-    public String getStatusIcon() {
-        if (this.isCompleted) {
-            return "[X]";
-        } else {
-            return "[ ]";
-        }
+    public String getTaskIcon() {
+        String statusIcon = "[" + (this.isCompleted ? "X" : " ") + "]";
+        return statusIcon;
     }
 
     @Override

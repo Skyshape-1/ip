@@ -1,5 +1,7 @@
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mili {
     private static final String HOR_DIV_LINE = "------------------------------------------------";
@@ -60,12 +62,60 @@ public class Mili {
         }
 
 
-        Task newTask = new Task(userMessage);
+        // Logic: Handle adding a new task
+        String taskTypeLong, taskName, taskTypeShort;
+        Task newTask;
+
+        String[] inArray = userMessage.split(" ");
+        taskTypeLong = inArray[0];
+
+
+        if (taskTypeLong.equals("todo")) {
+            taskTypeShort = "T";
+
+            taskName = String.join(" ",
+                    Arrays.copyOfRange(inArray, 1, inArray.length));
+            newTask = new Todo(taskName);
+
+        } else if (taskTypeLong.equals("deadline")) {
+            taskTypeShort = "D";
+
+            int byIndex = Arrays.asList(inArray).indexOf("/by");
+            taskName = String.join(" ",
+                    Arrays.copyOfRange(inArray, 1, byIndex));
+            String dueDate = String.join(" ",
+                    Arrays.copyOfRange(inArray, byIndex + 1, inArray.length));
+
+            newTask = new Deadline(taskName, dueDate);
+
+        } else if (taskTypeLong.equals("event")) {
+            taskTypeShort = "E";
+
+            int fromIndex = Arrays.asList(inArray).indexOf("/from");
+            int toIndex = Arrays.asList(inArray).indexOf("/to");
+            taskName = String.join(" ",
+                    Arrays.copyOfRange(inArray, 1, fromIndex));
+            String startDate = String.join(" ",
+                    Arrays.copyOfRange(inArray,  fromIndex + 1, toIndex));
+            String endDate = String.join(" ",
+                    Arrays.copyOfRange(inArray,  toIndex+ 1, inArray.length));
+
+            newTask = new Event(taskName, startDate, endDate);
+        } else {
+            System.out.println("Invalid or unspecified task type. adding rejected!");
+            return;
+        }
+
+
+        // Task newTask = new Task(); Implement subclasses of Task class!!!
         tasksList.add(newTask);
 
         System.out.println(HOR_DIV_LINE);
-        System.out.println("added: " + userMessage);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + newTask.getTaskIcon() + " " + newTask);
+        System.out.println("Now you have " + tasksList.size() + " tasks in the list.");
         System.out.println(HOR_DIV_LINE);
+
         System.out.println("\n");
     }
 
@@ -78,7 +128,7 @@ public class Mili {
             // Print messages
             System.out.println(HOR_DIV_LINE);
             System.out.println("Nice! I've marked this task as done:");
-            System.out.println(markedTask.getStatusIcon() + " " + markedTask);
+            System.out.println(markedTask.getTaskIcon() + " " + markedTask);
             System.out.println(HOR_DIV_LINE);
             System.out.println("\n");
         } catch (NumberFormatException e) {
@@ -97,7 +147,7 @@ public class Mili {
             // Print messages
             System.out.println(HOR_DIV_LINE);
             System.out.println("OK, I've marked this task as not done yet:");
-            System.out.println(unmarkedTask.getStatusIcon() + " " + unmarkedTask);
+            System.out.println(unmarkedTask.getTaskIcon() + " " + unmarkedTask);
             System.out.println(HOR_DIV_LINE);
             System.out.println("\n");
         } catch (NumberFormatException e1) {
@@ -117,11 +167,12 @@ public class Mili {
 
     private static void list(ArrayList<Task> tasksList) {
         System.out.println(HOR_DIV_LINE);
+        System.out.println("Here are your list of tasks: ");
         int numberOfTasks = tasksList.size();
         Task curTask;
         for (int i = 0; i < numberOfTasks; i+=1) {
             curTask = tasksList.get(i);
-            System.out.println((i+1) + "." + curTask.getStatusIcon() + " " + curTask);
+            System.out.println((i+1) + "." + curTask.getTaskIcon() + " " + curTask);
         }
         System.out.println(HOR_DIV_LINE);
     }
