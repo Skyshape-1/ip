@@ -11,11 +11,25 @@ public class Task {
         this(taskName, false);
     }
 
+    public Task unmark() {
+        if (this.isCompleted) {
+            return new Task(this.taskName, false);
+        }
+        return this;
+    }
+
+    public Task mark() {
+        if (!this.isCompleted) {
+            return new Task(this.taskName, true);
+        }
+        return this;
+    }
+
     public String getStatusIcon() {
         if (this.isCompleted) {
-            return "X";
+            return "[X]";
         } else {
-            return " ";
+            return "[ ]";
         }
     }
 
