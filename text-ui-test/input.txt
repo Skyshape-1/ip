@@ -13,9 +13,18 @@ event party /from 6pm /to 8pm
 mark
 mark 0
 mark 1
+mark 3
 mark 100
 mark abc
 unmark 1
 list
+delete
+delete 3
+delete 1
+event party2 /from 3pm /to 5pm
+delete 100
+delete abc
+list
 blah
 bye
+

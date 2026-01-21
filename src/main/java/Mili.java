@@ -50,6 +50,9 @@ public class Mili {
                     case "event":
                         response = addEvent(nextMessage, storedTasks);
                         break;
+                    case "delete":
+                        response = delete(nextMessage, storedTasks);
+                        break;
                     default:
                         throw new MiliCommandNotFoundException("Invalid command");
                         // Which is a subclass of MiliException
@@ -203,10 +206,6 @@ public class Mili {
         }
     }
 
-    private static String exit() {
-        return "Bye. Hope to see you again soon!";
-    }
-
     private static String list(ArrayList<Task> tasksList) {
         String message = "Here are your list of tasks: \n";
         int numberOfTasks = tasksList.size();
@@ -218,5 +217,26 @@ public class Mili {
         // rid the message of trailing \n
         message = message.trim();
         return message;
+    }
+
+    private static String delete(String userMessage, ArrayList<Task> tasksList) throws MiliException {
+        try {
+            int idx = Integer.parseInt(userMessage.split(" ")[1]);
+            Task deletedTask = tasksList.remove(idx - 1);
+            String acknowledgement = "Noted. I've removed this task: ";
+            String description = "  " + deletedTask.getTaskIcon() + " " + deletedTask;
+            String numberOfTasks = "Now you have " + tasksList.size() + " tasks in the list.";
+            return acknowledgement + "\n" + description + "\n" + numberOfTasks;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new MiliException("Which task do you want to delete?");
+        } catch (NumberFormatException e1) {
+            throw new MiliException("Must provide an index in number");
+        } catch (IndexOutOfBoundsException e2) {
+            throw new MiliException("Invalid index given (out of scope)");
+        }
+    }
+
+    private static String exit() {
+        return "Bye. Hope to see you again soon!";
     }
 }
