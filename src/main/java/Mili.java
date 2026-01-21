@@ -10,23 +10,64 @@ public class Mili {
         ArrayList<Task> storedTasks = new ArrayList<Task>(100);
 
         printLogo();
-        greet();
+        wrapper(greet());
 
         Scanner sc = new Scanner(System.in);
 
         String nextMessage = sc.nextLine();
-        Task newTask;
+        String commandType, response;
         while(true) {
-            if (nextMessage.equals("bye")) {
-                exit();
-                break;
-            }
-            // newTask = new Task(nextMessage);
-            echo(nextMessage, storedTasks);
-            // storedTasks.add(newTask);
-            nextMessage = sc.nextLine();
 
+            
+            try {
+                commandType = nextMessage.split(" ")[0];
+
+                // Special case for bye to exit the program
+                if (commandType.equals("bye")) {
+                    wrapper(exit());
+                    break;
+                }
+                
+                switch (commandType) {
+                    case "greet":
+                        response = greet();
+                        break;
+                    case "list":
+                        response = list(storedTasks);
+                        break;
+                    case "mark":
+                        response = mark(storedTasks, nextMessage);
+                        break;
+                    case "unmark":
+                        response = unmark(storedTasks, nextMessage);
+                        break;
+                    case "todo":
+                        response = addTodo(nextMessage, storedTasks);
+                        break;
+                    case "deadline":
+                        response = addDeadline(nextMessage, storedTasks);
+                        break;
+                    case "event":
+                        response = addEvent(nextMessage, storedTasks);
+                        break;
+                    default:
+                        throw new MiliCommandNotFoundException("Invalid command");
+                        // Which is a subclass of MiliException
+                }
+
+                
+
+            } catch (MiliException e) {
+                response = e.getMessage();
+            } catch (ArrayIndexOutOfBoundsException e2) {
+                response = "Sorry! Mili didn't catch that. Empty command?";
+            }
+            // Print wrapped response
+            wrapper(response);
+
+            nextMessage = sc.nextLine();
         }
+        sc.close();
     }
 
     private static void printLogo() {
@@ -38,142 +79,144 @@ public class Mili {
         System.out.println("Hello from\n" + logo);
     }
 
-    private static void greet() {
-        String greeting = "Hello! I'm Mili \nWhat can I do for you?\n";
-        System.out.println(HOR_DIV_LINE);
-        System.out.println(greeting);
-        System.out.println(HOR_DIV_LINE);
-        System.out.println("\n");
+
+    private static void wrapper(String message) {
+        System.out.println(HOR_DIV_LINE + "\n" + message + "\n" + HOR_DIV_LINE + "\n");
+    }
+    private static String greet() {
+        return "Hello! I'm Mili \nWhat can I do for you?";
     }
 
-    private static void echo(String userMessage, ArrayList<Task> tasksList) {
-
-        if (userMessage.equals("list")) {
-            list(tasksList);
-            return;
-        }
-
-        if (userMessage.contains("unmark")) {
-            unmark(tasksList, userMessage.split(" ")[1]);
-            return;
-        } else if (userMessage.contains("mark")) {
-            mark(tasksList, userMessage.split(" ")[1]);
-            return;
-        }
-
-
-        // Logic: Handle adding a new task
-        String taskTypeLong, taskName, taskTypeShort;
-        Task newTask;
-
+    private static String addTodo(String userMessage, ArrayList<Task> tasksList) throws MiliException {
         String[] inArray = userMessage.split(" ");
-        taskTypeLong = inArray[0];
-
-
-        if (taskTypeLong.equals("todo")) {
-            taskTypeShort = "T";
-
-            taskName = String.join(" ",
-                    Arrays.copyOfRange(inArray, 1, inArray.length));
-            newTask = new Todo(taskName);
-
-        } else if (taskTypeLong.equals("deadline")) {
-            taskTypeShort = "D";
-
-            int byIndex = Arrays.asList(inArray).indexOf("/by");
-            taskName = String.join(" ",
-                    Arrays.copyOfRange(inArray, 1, byIndex));
-            String dueDate = String.join(" ",
-                    Arrays.copyOfRange(inArray, byIndex + 1, inArray.length));
-
-            newTask = new Deadline(taskName, dueDate);
-
-        } else if (taskTypeLong.equals("event")) {
-            taskTypeShort = "E";
-
-            int fromIndex = Arrays.asList(inArray).indexOf("/from");
-            int toIndex = Arrays.asList(inArray).indexOf("/to");
-            taskName = String.join(" ",
-                    Arrays.copyOfRange(inArray, 1, fromIndex));
-            String startDate = String.join(" ",
-                    Arrays.copyOfRange(inArray,  fromIndex + 1, toIndex));
-            String endDate = String.join(" ",
-                    Arrays.copyOfRange(inArray,  toIndex+ 1, inArray.length));
-
-            newTask = new Event(taskName, startDate, endDate);
-        } else {
-            System.out.println("Invalid or unspecified task type. adding rejected!");
-            return;
+        String taskName = String.join(" ",
+                Arrays.copyOfRange(inArray, 1, inArray.length));
+        
+        if (taskName.isBlank()) {
+            throw new MiliEmptyDescriptionException("The description of a todo cannot be empty.");
         }
-
-
-        // Task newTask = new Task(); Implement subclasses of Task class!!!
+        Task newTask = new Todo(taskName);
         tasksList.add(newTask);
 
-        System.out.println(HOR_DIV_LINE);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + newTask.getTaskIcon() + " " + newTask);
-        System.out.println("Now you have " + tasksList.size() + " tasks in the list.");
-        System.out.println(HOR_DIV_LINE);
-
-        System.out.println("\n");
+        String message = "Got it. I've added this task: \n";
+        message += "  " + newTask.getTaskIcon() + " " + newTask + "\n";
+        message += "Now you have " + tasksList.size() + " tasks in the list.";
+        return message;
     }
+    
+    private static String addDeadline(String userMessage, ArrayList<Task> tasksList) throws MiliException {
+        String[] inArray = userMessage.split(" ");
+        int byIndex = Arrays.asList(inArray).indexOf("/by");
 
-    public static void mark(ArrayList<Task> tasksList, String index) {
+        if (byIndex == -1) {
+            throw new MiliInvalidFormatException("Please use: deadline [name] /by [date]");
+        }
+
+        if (byIndex == 1) {
+            throw new MiliEmptyDescriptionException("The description of a deadline cannot be empty.");
+        }
+
+        String taskName = String.join(" ",
+                Arrays.copyOfRange(inArray, 1, byIndex));
+        String dueDate = String.join(" ",
+                Arrays.copyOfRange(inArray, byIndex + 1, inArray.length));
+
+        if (dueDate.isBlank()) {
+            throw new MiliEmptyDescriptionException("The due date of a deadline cannot be empty.");
+        }
+
+        Task newTask = new Deadline(taskName, dueDate);
+        tasksList.add(newTask);
+
+        String message = "Got it. I've added this task: \n";
+        message += "  " + newTask.getTaskIcon() + " " + newTask + "\n";
+        message += "Now you have " + tasksList.size() + " tasks in the list.";
+        return message;   
+    }
+    
+    private static String addEvent(String userMessage, ArrayList<Task> tasksList) throws MiliException {
+        String[] inArray = userMessage.split(" ");
+        int fromIndex = Arrays.asList(inArray).indexOf("/from");
+        int toIndex = Arrays.asList(inArray).indexOf("/to");
+
+        if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
+            throw new MiliInvalidFormatException("Please use: event [name] /from [start] /to [end]");
+        }
+
+        if (fromIndex == 1) {
+            throw new MiliEmptyDescriptionException("The description of an event cannot be empty.");
+        }
+
+        String taskName = String.join(" ",
+                Arrays.copyOfRange(inArray, 1, fromIndex));
+        String startDate = String.join(" ",
+                Arrays.copyOfRange(inArray, fromIndex + 1, toIndex));
+        String endDate = String.join(" ",
+                Arrays.copyOfRange(inArray, toIndex+ 1, inArray.length));
+
+        if (startDate.isBlank() || endDate.isBlank()) {
+            throw new MiliEmptyDescriptionException("Both start and end dates are required.");
+        }
+
+        Task newTask = new Event(taskName, startDate, endDate);
+        tasksList.add(newTask);
+
+        String message = "Got it. I've added this task: \n";
+        message += "  " + newTask.getTaskIcon() + " " + newTask + "\n";
+        message += "Now you have " + tasksList.size() + " tasks in the list.";
+        return message;    
+    }
+    
+    public static String mark(ArrayList<Task> tasksList, String userMessage) throws MiliException {
         try {
-            int idx = Integer.parseInt(index);
+            int idx = Integer.parseInt(userMessage.split(" ")[1]);
             Task markedTask = tasksList.remove(idx - 1).mark();
             tasksList.add(idx - 1, markedTask);
 
-            // Print messages
-            System.out.println(HOR_DIV_LINE);
-            System.out.println("Nice! I've marked this task as done:");
-            System.out.println(markedTask.getTaskIcon() + " " + markedTask);
-            System.out.println(HOR_DIV_LINE);
-            System.out.println("\n");
-        } catch (NumberFormatException e) {
-            System.out.println("Must provide an index in number");
-        } catch (ArrayIndexOutOfBoundsException e2) {
-            System.out.println("Invalid index given (out of scope)");
-        }
+            String acknowledgement = "Nice! I've marked this task as done:";
+            String description = "  " + markedTask.getTaskIcon() + " " + markedTask;
+            return acknowledgement + "\n" + description;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new MiliException("Which task do you want to mark?");
+        } catch (NumberFormatException e1) {
+            throw new MiliException("Must provide an index in number");
+        } catch (IndexOutOfBoundsException e2) {
+            throw new MiliException("Invalid index given (out of scope)");
+        }        
     }
 
-    public static void unmark(ArrayList<Task> tasksList, String index) {
+    public static String unmark(ArrayList<Task> tasksList, String userMessage) throws MiliException {
         try {
-            int idx = Integer.parseInt(index);
+            int idx = Integer.parseInt(userMessage.split(" ")[1]);
             Task unmarkedTask = tasksList.remove(idx - 1).unmark();
             tasksList.add(idx - 1, unmarkedTask);
 
-            // Print messages
-            System.out.println(HOR_DIV_LINE);
-            System.out.println("OK, I've marked this task as not done yet:");
-            System.out.println(unmarkedTask.getTaskIcon() + " " + unmarkedTask);
-            System.out.println(HOR_DIV_LINE);
-            System.out.println("\n");
+            String acknowledgement = "OK, I've unmarked this task as not done yet:";
+            String description = "  " + unmarkedTask.getTaskIcon() + " " + unmarkedTask;
+            return acknowledgement + "\n" + description;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new MiliException("Which task do you want to unmark?");
         } catch (NumberFormatException e1) {
-            System.out.println("Must provide an index in number");
-        } catch (ArrayIndexOutOfBoundsException e2) {
-            System.out.println("Invalid index given (out of scope)");
+            throw new MiliException("Must provide an index in number");
+        } catch (IndexOutOfBoundsException e2) {
+            throw new MiliException("Invalid index given (out of scope)");
         }
     }
 
-    private static void exit() {
-        String byebye = "Bye. Hope to see you again soon!";
-        System.out.println(HOR_DIV_LINE);
-        System.out.println(byebye);
-        System.out.println(HOR_DIV_LINE);
-        System.out.println("\n");
+    private static String exit() {
+        return "Bye. Hope to see you again soon!";
     }
 
-    private static void list(ArrayList<Task> tasksList) {
-        System.out.println(HOR_DIV_LINE);
-        System.out.println("Here are your list of tasks: ");
+    private static String list(ArrayList<Task> tasksList) {
+        String message = "Here are your list of tasks: \n";
         int numberOfTasks = tasksList.size();
         Task curTask;
         for (int i = 0; i < numberOfTasks; i+=1) {
             curTask = tasksList.get(i);
-            System.out.println((i+1) + "." + curTask.getTaskIcon() + " " + curTask);
+            message += (i+1) + "." + curTask.getTaskIcon() + " " + curTask + "\n";
         }
-        System.out.println(HOR_DIV_LINE);
+        // rid the message of trailing \n
+        message = message.trim();
+        return message;
     }
 }

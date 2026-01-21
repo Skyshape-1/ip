@@ -8,99 +8,100 @@ Hello from
 ------------------------------------------------
 Hello! I'm Mili 
 What can I do for you?
-
 ------------------------------------------------
 
+------------------------------------------------
+Mili: OOPS! The description of a todo cannot be empty.
+------------------------------------------------
 
 ------------------------------------------------
-Got it. I've added this task:
-  [T] [ ] TD_1
+Got it. I've added this task: 
+  [T] [ ] read book
 Now you have 1 tasks in the list.
 ------------------------------------------------
 
+------------------------------------------------
+Mili: OOPS! Please use: deadline [name] /by [date]
+------------------------------------------------
 
 ------------------------------------------------
-Got it. I've added this task:
-  [E] [ ] art_jamming (from: Jan 28 to: Jan 29)
+Mili: OOPS! Please use: deadline [name] /by [date]
+------------------------------------------------
+
+------------------------------------------------
+Mili: OOPS! The due date of a deadline cannot be empty.
+------------------------------------------------
+
+------------------------------------------------
+Got it. I've added this task: 
+  [D] [ ] finish project (by: tonight)
 Now you have 2 tasks in the list.
 ------------------------------------------------
 
+------------------------------------------------
+Mili: OOPS! Please use: event [name] /from [start] /to [end]
+------------------------------------------------
 
 ------------------------------------------------
-Got it. I've added this task:
-  [D] [ ] assignment_1 (by: Sunday)
+Mili: OOPS! Please use: event [name] /from [start] /to [end]
+------------------------------------------------
+
+------------------------------------------------
+Mili: OOPS! Please use: event [name] /from [start] /to [end]
+------------------------------------------------
+
+------------------------------------------------
+Mili: OOPS! Please use: event [name] /from [start] /to [end]
+------------------------------------------------
+
+------------------------------------------------
+Mili: OOPS! Please use: event [name] /from [start] /to [end]
+------------------------------------------------
+
+------------------------------------------------
+Got it. I've added this task: 
+  [E] [ ] party (from: 6pm to: 8pm)
 Now you have 3 tasks in the list.
 ------------------------------------------------
 
-
 ------------------------------------------------
-Got it. I've added this task:
-  [D] [ ] assignment_2 (by: Idk :-))
-Now you have 4 tasks in the list.
+Mili: OOPS! Which task do you want to mark?
 ------------------------------------------------
 
+------------------------------------------------
+Mili: OOPS! Invalid index given (out of scope)
+------------------------------------------------
 
-------------------------------------------------
-Here are your list of tasks: 
-1.[T] [ ] TD_1
-2.[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
-3.[D] [ ] assignment_1 (by: Sunday)
-4.[D] [ ] assignment_2 (by: Idk :-))
-------------------------------------------------
 ------------------------------------------------
 Nice! I've marked this task as done:
-[T] [X] TD_1
+  [T] [X] read book
 ------------------------------------------------
 
-
 ------------------------------------------------
-Here are your list of tasks: 
-1.[T] [X] TD_1
-2.[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
-3.[D] [ ] assignment_1 (by: Sunday)
-4.[D] [ ] assignment_2 (by: Idk :-))
-------------------------------------------------
-------------------------------------------------
-OK, I've marked this task as not done yet:
-[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
+Mili: OOPS! Invalid index given (out of scope)
 ------------------------------------------------
 
-
 ------------------------------------------------
-Here are your list of tasks: 
-1.[T] [X] TD_1
-2.[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
-3.[D] [ ] assignment_1 (by: Sunday)
-4.[D] [ ] assignment_2 (by: Idk :-))
-------------------------------------------------
-------------------------------------------------
-Nice! I've marked this task as done:
-[D] [X] assignment_2 (by: Idk :-))
+Mili: OOPS! Must provide an index in number
 ------------------------------------------------
 
+------------------------------------------------
+OK, I've unmarked this task as not done yet:
+  [T] [ ] read book
+------------------------------------------------
 
 ------------------------------------------------
 Here are your list of tasks: 
-1.[T] [X] TD_1
-2.[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
-3.[D] [ ] assignment_1 (by: Sunday)
-4.[D] [X] assignment_2 (by: Idk :-))
-------------------------------------------------
-------------------------------------------------
-OK, I've marked this task as not done yet:
-[T] [ ] TD_1
+1.[T] [ ] read book
+2.[D] [ ] finish project (by: tonight)
+3.[E] [ ] party (from: 6pm to: 8pm)
 ------------------------------------------------
 
+------------------------------------------------
+Mili: OOPS! Invalid command
+------------------------------------------------
 
-------------------------------------------------
-Here are your list of tasks: 
-1.[T] [ ] TD_1
-2.[E] [ ] art_jamming (from: Jan 28 to: Jan 29)
-3.[D] [ ] assignment_1 (by: Sunday)
-4.[D] [X] assignment_2 (by: Idk :-))
-------------------------------------------------
 ------------------------------------------------
 Bye. Hope to see you again soon!
 ------------------------------------------------
-
 

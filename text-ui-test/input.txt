@@ -1,14 +1,21 @@
-todo TD_1
-event art_jamming /from Jan 28 /to Jan 29
-deadline assignment_1 /by Sunday
-deadline assignment_2 /by Idk :-)
-list
+todo
+todo read book
+deadline
+deadline finish project
+deadline finish project /by
+deadline finish project /by tonight
+event
+event party
+event party /from 6pm
+event party /to 8pm
+event party /to 8pm /from 6pm
+event party /from 6pm /to 8pm
+mark
+mark 0
 mark 1
-list
-unmark 2
-list
-mark 4
-list
+mark 100
+mark abc
 unmark 1
 list
+blah
 bye
