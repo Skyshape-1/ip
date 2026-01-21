@@ -1,7 +1,6 @@
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Mili {
     private static final String HOR_DIV_LINE = "------------------------------------------------";
@@ -18,7 +17,9 @@ public class Mili {
         String commandType, response;
         while(true) {
 
-            
+            if (nextMessage.equals("")) {
+                response = "Sorry! Mili didn't catch that. Empty command?";   
+            }
             try {
                 commandType = nextMessage.split(" ")[0];
 
@@ -55,16 +56,13 @@ public class Mili {
                         break;
                     default:
                         throw new MiliCommandNotFoundException("Invalid command");
-                        // Which is a subclass of MiliException
                 }
 
                 
 
             } catch (MiliException e) {
                 response = e.getMessage();
-            } catch (ArrayIndexOutOfBoundsException e2) {
-                response = "Sorry! Mili didn't catch that. Empty command?";
-            }
+            } 
             // Print wrapped response
             wrapper(response);
 
