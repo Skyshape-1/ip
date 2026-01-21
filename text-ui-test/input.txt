@@ -1,0 +1,14 @@
+todo TD_1
+event art_jamming /from Jan 28 /to Jan 29
+deadline assignment_1 /by Sunday
+deadline assignment_2 /by Idk :-)
+list
+mark 1
+list
+unmark 2
+list
+mark 4
+list
+unmark 1
+list
+bye
