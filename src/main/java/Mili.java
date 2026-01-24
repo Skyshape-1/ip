@@ -4,9 +4,21 @@ import java.util.ArrayList;
 
 public class Mili {
     private static final String HOR_DIV_LINE = "------------------------------------------------";
+
     public static void main(String[] args) {
 
-        ArrayList<Task> storedTasks = new ArrayList<Task>(100);
+        ArrayList<Task> storedTasks;
+        Memory memory = new Memory("data/memory.txt");
+
+        try {
+            storedTasks = memory.loadTasks();
+        } catch (MiliFileNotFoundException e) {
+            storedTasks = new ArrayList<>(100);
+            System.out.println("No previous memory found. Starting fresh.");
+        } catch (MiliException e) {
+            storedTasks = new ArrayList<>(100);
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
 
         printLogo();
         wrapper(greet());
@@ -15,10 +27,10 @@ public class Mili {
 
         String nextMessage = sc.nextLine();
         String commandType, response;
-        while(true) {
+        while (true) {
 
             if (nextMessage.equals("")) {
-                response = "Sorry! Mili didn't catch that. Empty command?";   
+                response = "Sorry! Mili didn't catch that. Empty command?";
             }
             try {
                 commandType = nextMessage.split(" ")[0];
@@ -28,7 +40,8 @@ public class Mili {
                     wrapper(exit());
                     break;
                 }
-                
+
+                boolean isMutatingCommand = false;
                 switch (commandType) {
                     case "greet":
                         response = greet();
@@ -38,31 +51,39 @@ public class Mili {
                         break;
                     case "mark":
                         response = mark(storedTasks, nextMessage);
+                        isMutatingCommand = true;
                         break;
                     case "unmark":
                         response = unmark(storedTasks, nextMessage);
+                        isMutatingCommand = true;
                         break;
                     case "todo":
                         response = addTodo(nextMessage, storedTasks);
+                        isMutatingCommand = true;
                         break;
                     case "deadline":
                         response = addDeadline(nextMessage, storedTasks);
+                        isMutatingCommand = true;
                         break;
                     case "event":
                         response = addEvent(nextMessage, storedTasks);
+                        isMutatingCommand = true;
                         break;
                     case "delete":
                         response = delete(nextMessage, storedTasks);
+                        isMutatingCommand = true;
                         break;
                     default:
                         throw new MiliCommandNotFoundException("Invalid command");
                 }
 
-                
+                if (isMutatingCommand) {
+                    memory.saveTasks(storedTasks);
+                }
 
             } catch (MiliException e) {
                 response = e.getMessage();
-            } 
+            }
             // Print wrapped response
             wrapper(response);
 
@@ -80,10 +101,10 @@ public class Mili {
         System.out.println("Hello from\n" + logo);
     }
 
-
     private static void wrapper(String message) {
         System.out.println(HOR_DIV_LINE + "\n" + message + "\n" + HOR_DIV_LINE + "\n");
     }
+
     private static String greet() {
         return "Hello! I'm Mili \nWhat can I do for you?";
     }
@@ -92,7 +113,7 @@ public class Mili {
         String[] inArray = userMessage.split(" ");
         String taskName = String.join(" ",
                 Arrays.copyOfRange(inArray, 1, inArray.length));
-        
+
         if (taskName.isBlank()) {
             throw new MiliEmptyDescriptionException("The description of a todo cannot be empty.");
         }
@@ -104,7 +125,7 @@ public class Mili {
         message += "Now you have " + tasksList.size() + " tasks in the list.";
         return message;
     }
-    
+
     private static String addDeadline(String userMessage, ArrayList<Task> tasksList) throws MiliException {
         String[] inArray = userMessage.split(" ");
         int byIndex = Arrays.asList(inArray).indexOf("/by");
@@ -132,9 +153,9 @@ public class Mili {
         String message = "Got it. I've added this task: \n";
         message += "  " + newTask.getTaskIcon() + " " + newTask + "\n";
         message += "Now you have " + tasksList.size() + " tasks in the list.";
-        return message;   
+        return message;
     }
-    
+
     private static String addEvent(String userMessage, ArrayList<Task> tasksList) throws MiliException {
         String[] inArray = userMessage.split(" ");
         int fromIndex = Arrays.asList(inArray).indexOf("/from");
@@ -153,7 +174,7 @@ public class Mili {
         String startDate = String.join(" ",
                 Arrays.copyOfRange(inArray, fromIndex + 1, toIndex));
         String endDate = String.join(" ",
-                Arrays.copyOfRange(inArray, toIndex+ 1, inArray.length));
+                Arrays.copyOfRange(inArray, toIndex + 1, inArray.length));
 
         if (startDate.isBlank() || endDate.isBlank()) {
             throw new MiliEmptyDescriptionException("Both start and end dates are required.");
@@ -165,9 +186,9 @@ public class Mili {
         String message = "Got it. I've added this task: \n";
         message += "  " + newTask.getTaskIcon() + " " + newTask + "\n";
         message += "Now you have " + tasksList.size() + " tasks in the list.";
-        return message;    
+        return message;
     }
-    
+
     public static String mark(ArrayList<Task> tasksList, String userMessage) throws MiliException {
         try {
             int idx = Integer.parseInt(userMessage.split(" ")[1]);
@@ -183,7 +204,7 @@ public class Mili {
             throw new MiliException("Must provide an index in number");
         } catch (IndexOutOfBoundsException e2) {
             throw new MiliException("Invalid index given (out of scope)");
-        }        
+        }
     }
 
     public static String unmark(ArrayList<Task> tasksList, String userMessage) throws MiliException {
@@ -208,9 +229,9 @@ public class Mili {
         String message = "Here are your list of tasks: \n";
         int numberOfTasks = tasksList.size();
         Task curTask;
-        for (int i = 0; i < numberOfTasks; i+=1) {
+        for (int i = 0; i < numberOfTasks; i += 1) {
             curTask = tasksList.get(i);
-            message += (i+1) + "." + curTask.getTaskIcon() + " " + curTask + "\n";
+            message += (i + 1) + "." + curTask.getTaskIcon() + " " + curTask + "\n";
         }
         // rid the message of trailing \n
         message = message.trim();

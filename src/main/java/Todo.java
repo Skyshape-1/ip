@@ -28,4 +28,9 @@ public class Todo extends Task {
     public String getTaskIcon() {
         return "[T] " + super.getTaskIcon();
     }
+
+    @Override
+    public String toFileString() {
+        return "T | " + (this.isCompleted ? "1" : "0") + " | " + this.taskName;
+    }
 }

@@ -37,4 +37,9 @@ public class Deadline extends Task {
         // e.g. "return book (by: June 6th)"
         return super.toString() + " (by: " + this.dueDate + ")";
     }
+
+    @Override
+    public String toFileString() {
+        return "D | " + (this.isCompleted ? "1" : "0") + " | " + this.taskName + " | " + this.dueDate;
+    }
 }
