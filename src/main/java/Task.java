@@ -1,4 +1,4 @@
-public class Task {
+public abstract class Task {
     protected final String taskName;
     protected final boolean isCompleted;
 
@@ -11,19 +11,9 @@ public class Task {
         this(taskName, false);
     }
 
-    public Task unmark() {
-        if (this.isCompleted) {
-            return new Task(this.taskName, false);
-        }
-        return this;
-    }
+    public abstract Task unmark();
 
-    public Task mark() {
-        if (!this.isCompleted) {
-            return new Task(this.taskName, true);
-        }
-        return this;
-    }
+    public abstract Task mark();
 
     public String getTaskIcon() {
         String statusIcon = "[" + (this.isCompleted ? "X" : " ") + "]";
@@ -34,4 +24,6 @@ public class Task {
     public String toString() {
         return this.taskName;
     }
+
+    public abstract String toFileString();
 }

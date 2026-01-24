@@ -45,4 +45,11 @@ public class Event extends Task {
         // e.g. "project meeting (from: Aug 6th 2pm to: 4pm)"
         return super.toString() + " (from: " + this.startDate + " to: " + this.endDate + ")";
     }
+
+    @Override
+    public String toFileString() {
+        return "E | " + (this.isCompleted ? "1" : "0") + " | " +
+                this.taskName + " | " + this.startDate + " | " +
+                this.endDate;
+    }
 }
