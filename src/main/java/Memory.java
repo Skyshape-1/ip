@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 public class Memory {
     private final String filePath;
@@ -86,13 +87,24 @@ public class Memory {
                 if (parts.length != 4) {
                     throw new MiliCorruptDataException("Unexpected fields for Deadline: " + line);
                 }
-                task = new Deadline(description, parts[3], isDone);
+                try {
+                    LocalDate parsedDueDate = DateParser.parse(parts[3]);
+                    task = new Deadline(description, parsedDueDate, isDone);
+                } catch (MiliDateFormatException e) {
+                    throw new MiliCorruptDataException("Invalid date format for Deadline: " + line);
+                }
                 break;
             case "E":
                 if (parts.length != 5) {
                     throw new MiliCorruptDataException("Unexpected fields for Event: " + line);
                 }
-                task = new Event(description, parts[3], parts[4], isDone);
+                try {
+                    LocalDate parsedStartDate = DateParser.parse(parts[3]);
+                    LocalDate parsedEndDate = DateParser.parse(parts[4]);
+                    task = new Event(description, parsedStartDate, parsedEndDate, isDone);
+                } catch (MiliDateFormatException e) {
+                    throw new MiliCorruptDataException("Invalid date format for Event: " + line);
+                }   
                 break;
             default:
                 throw new MiliCorruptDataException("Unknown task type: " + type);
