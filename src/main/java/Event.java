@@ -53,11 +53,8 @@ public class Event extends Task {
 
     @Override
     public String toFileString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d'th' yyyy");
-        String formattedStartDate = this.startDate.format(formatter);
-        String formattedEndDate = this.endDate.format(formatter);
         return "E | " + (this.isCompleted ? "1" : "0") + " | " +
-                this.taskName + " | " + formattedStartDate + " | " +
-                formattedEndDate;
+                this.taskName + " | " + this.startDate + " | " +
+                this.endDate;
     }
 }
