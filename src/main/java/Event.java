@@ -1,14 +1,17 @@
-public class Event extends Task {
-    private final String startDate;
-    private final String endDate;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-    Event(String taskName, String startDate, String endDate, Boolean isCompleted) {
+public class Event extends Task {
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+
+    Event(String taskName, LocalDate startDate, LocalDate endDate, Boolean isCompleted) {
         super(taskName, isCompleted);
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    Event(String taskName, String startDate, String endDate) {
+    Event(String taskName, LocalDate startDate, LocalDate endDate) {
         super(taskName);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -42,14 +45,19 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        // e.g. "project meeting (from: Aug 6th 2pm to: 4pm)"
-        return super.toString() + " (from: " + this.startDate + " to: " + this.endDate + ")";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d'th' yyyy");
+        String formattedStartDate = this.startDate.format(formatter);
+        String formattedEndDate = this.endDate.format(formatter);
+        return super.toString() + " (from: " + formattedStartDate + " to: " + formattedEndDate + ")";
     }
 
     @Override
     public String toFileString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d'th' yyyy");
+        String formattedStartDate = this.startDate.format(formatter);
+        String formattedEndDate = this.endDate.format(formatter);
         return "E | " + (this.isCompleted ? "1" : "0") + " | " +
-                this.taskName + " | " + this.startDate + " | " +
-                this.endDate;
+                this.taskName + " | " + formattedStartDate + " | " +
+                formattedEndDate;
     }
 }

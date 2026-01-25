@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class Mili {
     private static final String HOR_DIV_LINE = "------------------------------------------------";
@@ -147,7 +148,9 @@ public class Mili {
             throw new MiliEmptyDescriptionException("The due date of a deadline cannot be empty.");
         }
 
-        Task newTask = new Deadline(taskName, dueDate);
+        LocalDate parsedDueDate = DateParser.parse(dueDate);
+
+        Task newTask = new Deadline(taskName, parsedDueDate);
         tasksList.add(newTask);
 
         String message = "Got it. I've added this task: \n";
@@ -180,7 +183,16 @@ public class Mili {
             throw new MiliEmptyDescriptionException("Both start and end dates are required.");
         }
 
-        Task newTask = new Event(taskName, startDate, endDate);
+        LocalDate parsedStartDate;
+        LocalDate parsedEndDate;
+        try {
+            parsedStartDate = DateParser.parse(startDate);
+            parsedEndDate = DateParser.parse(endDate);
+        } catch (MiliDateFormatException e) {
+            throw e;
+        }
+
+        Task newTask = new Event(taskName, parsedStartDate, parsedEndDate);
         tasksList.add(newTask);
 
         String message = "Got it. I've added this task: \n";

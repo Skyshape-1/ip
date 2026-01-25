@@ -1,15 +1,21 @@
+list
 todo
 todo read book
 deadline
 deadline finish project
 deadline finish project /by
 deadline finish project /by tonight
+deadline finish project1 /by 11/01/2026
+deadline finish project2 /by 11/01/2026 1800
+deadline finish project3 /by 11/1/2026
 event
 event party
 event party /from 6pm
 event party /to 8pm
 event party /to 8pm /from 6pm
 event party /from 6pm /to 8pm
+event party1 /from 11/01/2026 2300 /to 12/01/2026 0100
+
 mark
 mark 0
 mark 1
@@ -21,7 +27,6 @@ list
 delete
 delete 3
 delete 1
-event party2 /from 3pm /to 5pm
 delete 100
 delete abc
 list
